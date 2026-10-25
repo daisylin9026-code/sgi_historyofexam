@@ -168,6 +168,42 @@ textarea.ta{font:inherit;font-size:15px;width:100%;min-height:5.5em;margin-top:8
 
 @media (max-width:600px){.frow{grid-template-columns:1fr;gap:4px}.flab{padding-top:0}header.mast{grid-template-columns:1fr}.seal{display:none}}
 
+/* ===== 頁首：收錄範圍（方案2，內容由題庫自動產生） ===== */
+.cov{margin:8px 0 0}
+.cov summary{cursor:pointer;list-style:none;display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;color:var(--mute);font-size:14px}
+.cov summary::-webkit-details-marker{display:none}
+.cov summary .tg{color:var(--jade);font-weight:700}
+.cov summary .tg::after{content:"查看各考試年份 ▾"}
+.cov[open] summary .tg::after{content:"收合 ▴"}
+.covwrap{overflow-x:auto;margin-top:8px}
+.covt{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:10px;font-size:14px}
+.covt th,.covt td{padding:6px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.covt thead th{font-size:12px;color:var(--mute);font-weight:500;white-space:nowrap}
+header.mast{align-items:start}
+.covt tbody th{font-family:"Noto Serif TC",serif;white-space:nowrap}
+.covt td.n{color:var(--jade);font-weight:700;text-align:right;white-space:nowrap}
+.covt thead th:last-child{text-align:right}
+.covt tr:last-child>*{border-bottom:0}
+.covnote{color:var(--mute);font-size:13px;margin:6px 0 0}
+/* ===== 篩選面板收合（方案E，桌機＋手機） ===== */
+.fsum{display:flex;width:100%;justify-content:space-between;align-items:center;gap:8px;font:inherit;color:var(--ink);background:transparent;border:0;padding:4px 0 10px;cursor:pointer;text-align:left}
+.fsum .fst{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#fSumTxt{color:var(--mute);font-size:14px;margin-left:10px}
+.fsum .tg{flex:none;color:var(--jade);font-weight:700}
+.fsum .tg::after{content:"展開 ▾"}
+.panel.open .fsum .tg::after{content:"收合 ▴"}
+.panel:not(.open){padding-bottom:6px}
+.panel:not(.open) .fbody{display:none}
+.panel.open .fsum{border-bottom:1px dashed var(--line);margin-bottom:12px}
+@media (max-width:600px){
+  /* ===== 年份 5 欄網格（方案C，僅手機） ===== */
+  #fY{display:grid;grid-template-columns:repeat(5,1fr);gap:8px 5px;padding-top:6px}
+  #fY .chip{position:relative;min-height:34px;padding:2px 0;font-size:13.5px;text-align:center}
+  #fY .chip .c{position:absolute;top:-8px;right:-4px;margin:0;font-size:10.5px;padding:0 5px;line-height:1.5}
+  #fY .chip.has .c{background:var(--jade-soft)}
+  #fY .chip[aria-pressed="true"] .c{background:var(--jade);color:#fff}
+  #fY .chip.zero:not([aria-pressed="true"]) .c{display:none}
+}
 </style>
 <style id="helpcss">
 .helpbtn{font:inherit}
@@ -206,12 +242,16 @@ textarea.ta{font:inherit;font-size:15px;width:100%;min-height:5.5em;margin-top:8
   <div class="seal">考古<br>題庫</div>
   <div>
     <h1>教學考試 考古題大全</h1>
-    <p class="sub">收錄一級（2002、2004、2008、2011、2019）、二級（2002、2004、2006、2008、2012、2015、2025）與三級（2003、2005、2007、2008、2009、2010、2012、2014、2016、2018、2022、2024），以及教學部員任用考試（2016～2020、2022～2025）與進修考試（2015、2017、2019、2023、2025）歷屆試題與解答範例。可依年份、考試、御書與範圍交叉篩選。</p>
+    <details class="cov" id="cov"><summary><span id="covSum">📚 收錄歷屆試題</span><span class="tg"></span></summary>
+      <div class="covwrap"><table class="covt"><thead><tr><th>考試</th><th>收錄年份</th><th>題數</th></tr></thead><tbody id="covT"></tbody></table></div>
+      <p class="covnote">可依考試、年份、考試範圍、御書與關鍵字交叉篩選。</p></details>
   </div>
 </header>
 
 <nav class="mode" aria-label="使用模式"><button data-mode="browse" aria-pressed="true">📚 題庫瀏覽</button><button data-mode="exam" aria-pressed="false">📝 模擬考試</button></nav>
 <section class="panel" aria-label="篩選條件">
+  <button type="button" class="fsum" id="fSum" aria-expanded="false" aria-controls="fBody"><span class="fst">🔍 <b>篩選條件</b><span id="fSumTxt"></span></span><span class="tg"></span></button>
+  <div class="fbody" id="fBody">
   <div class="frow"><div class="flab">考試名稱</div><div class="chips" id="fLv"></div></div>
   <div class="frow"><div class="flab">年份</div><div class="chips" id="fY"></div></div>
   <div class="frow"><div class="flab">考試範圍</div><div class="chips" id="fSc"></div></div>
@@ -225,6 +265,7 @@ textarea.ta{font:inherit;font-size:15px;width:100%;min-height:5.5em;margin-top:8
     </div>
   </div></div>
   <div class="frow"><div class="flab">關鍵字</div><div><input id="fK" type="search" placeholder="例如：三類強敵、地涌、現世安穩"></div></div>
+  </div>
 </section>
 
 <div class="bar" id="bbar">
@@ -239,7 +280,7 @@ textarea.ta{font:inherit;font-size:15px;width:100%;min-height:5.5em;margin-top:8
 </div>
 <main id="list"></main>
 <section id="exam" hidden></section>
-<div class="verline">v2026102502 by Daisy</div>
+<div class="verline">v2026102503 by Daisy</div>
 </div>
 
 <script>
@@ -513,6 +554,19 @@ exEl.addEventListener("click",e=>{
   if(t.dataset.gq){const id=+t.dataset.gq;X.grade[id]=t.dataset.s==="auto"?X.grade["auto"+id]:+t.dataset.s;xResult();return;}
 });
 document.querySelector(".mode").addEventListener("click",e=>{const b=e.target.closest("button[data-mode]");if(b)setMode(b.dataset.mode);});
+/* ===== 頁首收錄範圍：依題庫資料自動產生 ===== */
+(function(){
+  const LV=["一級","二級","三級","任用","進修"],NM={一級:"一級",二級:"二級",三級:"三級",任用:"任用考試",進修:"進修考試"};
+  document.getElementById("covT").innerHTML=LV.map(l=>{const L=DATA.filter(d=>d.lv===l);if(!L.length)return "";const ys=uniq(L.map(d=>d.y)).sort((a,b)=>a-b);return `<tr><th>${NM[l]}</th><td>${ys.join("、")}</td><td class="n">${L.length.toLocaleString()}</td></tr>`;}).join("");
+  const nLv=LV.filter(l=>DATA.some(d=>d.lv===l)).length;
+  document.getElementById("covSum").textContent=`📚 收錄 ${nLv} 種考試・共 ${DATA.length.toLocaleString()} 題`;
+})();
+/* ===== 篩選面板收合（桌機預設展開、手機預設收合） ===== */
+const fPanel=document.querySelector(".panel"),fSumBtn=document.getElementById("fSum");
+if(!matchMedia("(max-width:600px)").matches){fPanel.classList.add("open");fSumBtn.setAttribute("aria-expanded","true");}
+fSumBtn.addEventListener("click",()=>{const o=fPanel.classList.toggle("open");fSumBtn.setAttribute("aria-expanded",o?"true":"false");});
+function updSum(){const t=scopeText();document.getElementById("fSumTxt").textContent=/^全部題目/.test(t)?"全部題目":t;}
+const _render=render;render=function(){_render();updSum();};
 render();
 
 </script>
